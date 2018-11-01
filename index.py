@@ -30,13 +30,13 @@ app.layout = html.Div(
 
             dcc.Tabs(
                 id="tabs",
-                style={"height":"25","verticalAlign":"middle"},
+                style={"height":"20","verticalAlign":"middle"},
                 children=[
                     dcc.Tab(label="Opportunities", value="opportunities_tab"),
-                    dcc.Tab(label="Leads", value="leads_tab"),
-                    dcc.Tab(id="cases_tab",label="Cases", value="cases_tab"),
+                    #dcc.Tab(label="Leads", value="leads_tab"),
+                    #dcc.Tab(id="cases_tab",label="Cases", value="cases_tab"),
                 ],
-                value="leads_tab",
+                value="opportunities_tab",
             )
 
             ],
@@ -46,12 +46,13 @@ app.layout = html.Div(
                 
         # divs that save dataframe for each tab
         html.Div(
-                sf_manager.get_opportunities().to_json(orient="split"),  # opportunities df
-                id="opportunities_df",
-                style={"display": "none"},
-            ),
-        html.Div(sf_manager.get_leads().to_json(orient="split"), id="leads_df", style={"display": "none"}), # leads df
-        html.Div(sf_manager.get_cases().to_json(orient="split"), id="cases_df", style={"display": "none"}), # cases df
+            pd.read_csv('./datasets/kaggle_gimmecredit/cs-training.csv').head().to_json(orient="split"),
+            # sf_manager.get_opportunities().to_json(orient="split"),  # opportunities df
+            id="give_me_some_credit_df",
+            style={"display": "none"},
+        ),
+        #html.Div(sf_manager.get_leads().to_json(orient="split"), id="leads_df", style={"display": "none"}), # leads df
+        #html.Div(sf_manager.get_cases().to_json(orient="split"), id="cases_df", style={"display": "none"}), # cases df
 
 
 

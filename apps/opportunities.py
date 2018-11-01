@@ -88,295 +88,291 @@ def heat_map_fig(df, x, y):
     return go.Figure(data=[trace], layout=layout)
 
 
-# returns top 5 lost opportunities
-def top_lost_opportunities(df):
-    df = df.sort_values("Amount", ascending=True)
-    cols = ["CreatedDate", "Name", "Amount", "StageName"]
-    df = df[cols].iloc[:5]
-    df["Name"] = df["Name"].apply(lambda x: x[:30]) # only display 21 characters
+# returns kaggle dataset
+def give_me_some_credit(df):
     return df_to_table(df)
 
 
 # returns top 5 lost opportunities
-def top_lost_opportunities(df):
-    df = df[df["StageName"] == 'Closed Lost']
-    cols = ["CreatedDate", "Name", "Amount", "StageName"]
-    df = df[cols].sort_values("Amount", ascending=False).iloc[:5]
-    df["Name"] = df["Name"].apply(lambda x: x[:30]) # only display 21 characters
-    return df_to_table(df)
-
-
-# returns modal (hidden by default)
-def modal():
-    return html.Div(
-        html.Div(
-            [
-                html.Div(
-                    [
-
-                        # modal header
-                        html.Div(
-                            [
-                                html.Span(
-                                    "New Opportunity",
-                                    style={
-                                        "color": "#506784",
-                                        "fontWeight": "bold",
-                                        "fontSize": "20",
-                                    },
-                                ),
-                                html.Span(
-                                    "×",
-                                    id="opportunities_modal_close",
-                                    n_clicks=0,
-                                    style={
-                                        "float": "right",
-                                        "cursor": "pointer",
-                                        "marginTop": "0",
-                                        "marginBottom": "17",
-                                    },
-                                ),
-                            ],
-                            className="row",
-                            style={"borderBottom": "1px solid #C8D4E3"},
-                        ),
-
-
-                        # modal form 
-                        html.Div(
-                            [
-
-                                # left div
-                                html.Div(
-                                    [
-                                        html.P(
-                                            [
-                                                "Name"
-                                            ],
-                                            style={
-                                                "float": "left",
-                                                "marginTop": "4",
-                                                "marginBottom": "2",
-                                            },
-                                            className="row",
-                                        ),
-                                        dcc.Input(
-                                            id="new_opportunity_name",
-                                            placeholder="Name of the opportunity",
-                                            type="text",
-                                            value="",
-                                            style={"width": "100%"},
-                                        ),
-
-                                        html.P(
-                                            [
-                                                "StageName"
-                                            ],
-                                            style={
-                                                "textAlign": "left",
-                                                "marginBottom": "2",
-                                                "marginTop": "4",
-                                            },
-                                        ),
-                                        dcc.Dropdown(
-                                            id="new_opportunity_stage",
-                                            options=[
-                                                {
-                                                    "label": "Prospecting",
-                                                    "value": "Prospecting",
-                                                },
-                                                {
-                                                    "label": "Qualification",
-                                                    "value": "Qualification",
-                                                },
-                                                {
-                                                    "label": "Needs Analysis",
-                                                    "value": "Needs Analysis",
-                                                },
-                                                {
-                                                    "label": "Value Proposition",
-                                                    "value": "Value Proposition",
-                                                },
-                                                {
-                                                    "label": "Id. Decision Makers",
-                                                    "value": "Closed",
-                                                },
-                                                {
-                                                    "label": "Perception Analysis",
-                                                    "value": "Perception Analysis",
-                                                },
-                                                {
-                                                    "label": "Proposal/Price Quote",
-                                                    "value": "Proposal/Price Quote",
-                                                },
-                                                {
-                                                    "label": "Negotiation/Review",
-                                                    "value": "Negotiation/Review",
-                                                },
-                                                {
-                                                    "label": "Closed/Won",
-                                                    "value": "Closed Won",
-                                                },
-                                                {
-                                                    "label": "Closed/Lost",
-                                                    "value": "Closed Lost",
-                                                },
-                                            ],
-                                            clearable=False,
-                                            value="Prospecting",
-                                        ),
-
-                                        html.P(
-                                            "Source",
-                                            style={
-                                                "textAlign": "left",
-                                                "marginBottom": "2",
-                                                "marginTop": "4",
-                                            },
-                                        ),
-                                        dcc.Dropdown(
-                                            id="new_opportunity_source",
-                                            options=[
-                                                {"label": "Web", "value": "Web"},
-                                                {
-                                                    "label": "Phone Inquiry",
-                                                    "value": "Phone Inquiry",
-                                                },
-                                                {
-                                                    "label": "Partner Referral",
-                                                    "value": "Partner Referral",
-                                                },
-                                                {
-                                                    "label": "Purchased List",
-                                                    "value": "Purchased List",
-                                                },
-                                                {"label": "Other", "value": "Other"},
-                                            ],
-                                            value="Web",
-                                        ),
-
-                                        html.P(
-                                            [
-                                                "Close Date"
-                                            ],
-                                            style={
-                                                "textAlign": "left",
-                                                "marginBottom": "2",
-                                                "marginTop": "4",
-                                            },
-                                        ),
-                                        html.Div(
-                                            dcc.DatePickerSingle(
-                                                id="new_opportunity_date",
-                                                min_date_allowed=date.today(),
-                                                # max_date_allowed=dt(2017, 9, 19),
-                                                initial_visible_month=date.today(),
-                                                date=date.today(),
-                                            ),
-                                            style={"textAlign": "left"},
-                                        ),
-
-                                    ],
-                                    className="six columns",
-                                    style={"paddingRight": "15"},
-                                ),
-
-                                
-                                # right div
-                                html.Div(
-                                    [
-                                        html.P(
-                                            "Type",
-                                            style={
-                                                "textAlign": "left",
-                                                "marginBottom": "2",
-                                                "marginTop": "4",
-                                            },
-                                        ),
-                                        dcc.Dropdown(
-                                            id="new_opportunity_type",
-                                            options=[
-                                                {
-                                                    "label": "Existing Customer - Replacement",
-                                                    "value": "Existing Customer - Replacement",
-                                                },
-                                                {
-                                                    "label": "New Customer",
-                                                    "value": "New Customer",
-                                                },
-                                                {
-                                                    "label": "Existing Customer - Upgrade",
-                                                    "value": "Existing Customer - Upgrade",
-                                                },
-                                                {
-                                                    "label": "Existing Customer - Downgrade",
-                                                    "value": "Existing Customer - Downgrade",
-                                                },
-                                            ],
-                                            value="New Customer",
-                                        ),
-
-                                        html.P(
-                                            "Amount",
-                                            style={
-                                                "textAlign": "left",
-                                                "marginBottom": "2",
-                                                "marginTop": "4",
-                                            },
-                                        ),
-                                        dcc.Input(
-                                            id="new_opportunity_amount",
-                                            placeholder="0",
-                                            type="number",
-                                            value="",
-                                            style={"width": "100%"},
-                                        ),
-
-                                        html.P(
-                                            "Probability",
-                                            style={
-                                                "textAlign": "left",
-                                                "marginBottom": "2",
-                                                "marginTop": "4",
-                                            },
-                                        ),
-                                        dcc.Input(
-                                            id="new_opportunity_probability",
-                                            placeholder="0",
-                                            type="number",
-                                            max=100,
-                                            step=1,
-                                            value="",
-                                            style={"width": "100%"},
-                                        ),
-
-                                    ],
-                                    className="six columns",
-                                    style={"paddingLeft": "15"},
-                                ),
-                            ],
-                            className="row",
-                            style={"paddingTop": "2%"},
-                        ),
-
-
-                        # submit button
-                        html.Span(
-                            "Submit",
-                            id="submit_new_opportunity",
-                            n_clicks=0,
-                            className="button button--primary add"
-                        ),
-                    ],
-                    className="modal-content",
-                    style={"textAlign": "center"},
-                )
-            ],
-            className="modal",
-        ),
-        id="opportunities_modal",
-        style={"display": "none"},
-    )
+# def top_lost_opportunities(df):
+#     df = df[df["StageName"] == 'Closed Lost']
+#     cols = ["CreatedDate", "Name", "Amount", "StageName"]
+#     df = df[cols].sort_values("Amount", ascending=False).iloc[:5]
+#     df["Name"] = df["Name"].apply(lambda x: x[:30]) # only display 21 characters
+#     return df_to_table(df)
+#
+#
+# # returns modal (hidden by default)
+# def modal():
+#     return html.Div(
+#         html.Div(
+#             [
+#                 html.Div(
+#                     [
+#
+#                         # modal header
+#                         html.Div(
+#                             [
+#                                 html.Span(
+#                                     "New Opportunity",
+#                                     style={
+#                                         "color": "#506784",
+#                                         "fontWeight": "bold",
+#                                         "fontSize": "20",
+#                                     },
+#                                 ),
+#                                 html.Span(
+#                                     "×",
+#                                     id="opportunities_modal_close",
+#                                     n_clicks=0,
+#                                     style={
+#                                         "float": "right",
+#                                         "cursor": "pointer",
+#                                         "marginTop": "0",
+#                                         "marginBottom": "17",
+#                                     },
+#                                 ),
+#                             ],
+#                             className="row",
+#                             style={"borderBottom": "1px solid #C8D4E3"},
+#                         ),
+#
+#
+#                         # modal form
+#                         html.Div(
+#                             [
+#
+#                                 # left div
+#                                 html.Div(
+#                                     [
+#                                         html.P(
+#                                             [
+#                                                 "Name"
+#                                             ],
+#                                             style={
+#                                                 "float": "left",
+#                                                 "marginTop": "4",
+#                                                 "marginBottom": "2",
+#                                             },
+#                                             className="row",
+#                                         ),
+#                                         dcc.Input(
+#                                             id="new_opportunity_name",
+#                                             placeholder="Name of the opportunity",
+#                                             type="text",
+#                                             value="",
+#                                             style={"width": "100%"},
+#                                         ),
+#
+#                                         html.P(
+#                                             [
+#                                                 "StageName"
+#                                             ],
+#                                             style={
+#                                                 "textAlign": "left",
+#                                                 "marginBottom": "2",
+#                                                 "marginTop": "4",
+#                                             },
+#                                         ),
+#                                         dcc.Dropdown(
+#                                             id="new_opportunity_stage",
+#                                             options=[
+#                                                 {
+#                                                     "label": "Prospecting",
+#                                                     "value": "Prospecting",
+#                                                 },
+#                                                 {
+#                                                     "label": "Qualification",
+#                                                     "value": "Qualification",
+#                                                 },
+#                                                 {
+#                                                     "label": "Needs Analysis",
+#                                                     "value": "Needs Analysis",
+#                                                 },
+#                                                 {
+#                                                     "label": "Value Proposition",
+#                                                     "value": "Value Proposition",
+#                                                 },
+#                                                 {
+#                                                     "label": "Id. Decision Makers",
+#                                                     "value": "Closed",
+#                                                 },
+#                                                 {
+#                                                     "label": "Perception Analysis",
+#                                                     "value": "Perception Analysis",
+#                                                 },
+#                                                 {
+#                                                     "label": "Proposal/Price Quote",
+#                                                     "value": "Proposal/Price Quote",
+#                                                 },
+#                                                 {
+#                                                     "label": "Negotiation/Review",
+#                                                     "value": "Negotiation/Review",
+#                                                 },
+#                                                 {
+#                                                     "label": "Closed/Won",
+#                                                     "value": "Closed Won",
+#                                                 },
+#                                                 {
+#                                                     "label": "Closed/Lost",
+#                                                     "value": "Closed Lost",
+#                                                 },
+#                                             ],
+#                                             clearable=False,
+#                                             value="Prospecting",
+#                                         ),
+#
+#                                         html.P(
+#                                             "Source",
+#                                             style={
+#                                                 "textAlign": "left",
+#                                                 "marginBottom": "2",
+#                                                 "marginTop": "4",
+#                                             },
+#                                         ),
+#                                         dcc.Dropdown(
+#                                             id="new_opportunity_source",
+#                                             options=[
+#                                                 {"label": "Web", "value": "Web"},
+#                                                 {
+#                                                     "label": "Phone Inquiry",
+#                                                     "value": "Phone Inquiry",
+#                                                 },
+#                                                 {
+#                                                     "label": "Partner Referral",
+#                                                     "value": "Partner Referral",
+#                                                 },
+#                                                 {
+#                                                     "label": "Purchased List",
+#                                                     "value": "Purchased List",
+#                                                 },
+#                                                 {"label": "Other", "value": "Other"},
+#                                             ],
+#                                             value="Web",
+#                                         ),
+#
+#                                         html.P(
+#                                             [
+#                                                 "Close Date"
+#                                             ],
+#                                             style={
+#                                                 "textAlign": "left",
+#                                                 "marginBottom": "2",
+#                                                 "marginTop": "4",
+#                                             },
+#                                         ),
+#                                         html.Div(
+#                                             dcc.DatePickerSingle(
+#                                                 id="new_opportunity_date",
+#                                                 min_date_allowed=date.today(),
+#                                                 # max_date_allowed=dt(2017, 9, 19),
+#                                                 initial_visible_month=date.today(),
+#                                                 date=date.today(),
+#                                             ),
+#                                             style={"textAlign": "left"},
+#                                         ),
+#
+#                                     ],
+#                                     className="six columns",
+#                                     style={"paddingRight": "15"},
+#                                 ),
+#
+#
+#                                 # right div
+#                                 html.Div(
+#                                     [
+#                                         html.P(
+#                                             "Type",
+#                                             style={
+#                                                 "textAlign": "left",
+#                                                 "marginBottom": "2",
+#                                                 "marginTop": "4",
+#                                             },
+#                                         ),
+#                                         dcc.Dropdown(
+#                                             id="new_opportunity_type",
+#                                             options=[
+#                                                 {
+#                                                     "label": "Existing Customer - Replacement",
+#                                                     "value": "Existing Customer - Replacement",
+#                                                 },
+#                                                 {
+#                                                     "label": "New Customer",
+#                                                     "value": "New Customer",
+#                                                 },
+#                                                 {
+#                                                     "label": "Existing Customer - Upgrade",
+#                                                     "value": "Existing Customer - Upgrade",
+#                                                 },
+#                                                 {
+#                                                     "label": "Existing Customer - Downgrade",
+#                                                     "value": "Existing Customer - Downgrade",
+#                                                 },
+#                                             ],
+#                                             value="New Customer",
+#                                         ),
+#
+#                                         html.P(
+#                                             "Amount",
+#                                             style={
+#                                                 "textAlign": "left",
+#                                                 "marginBottom": "2",
+#                                                 "marginTop": "4",
+#                                             },
+#                                         ),
+#                                         dcc.Input(
+#                                             id="new_opportunity_amount",
+#                                             placeholder="0",
+#                                             type="number",
+#                                             value="",
+#                                             style={"width": "100%"},
+#                                         ),
+#
+#                                         html.P(
+#                                             "Probability",
+#                                             style={
+#                                                 "textAlign": "left",
+#                                                 "marginBottom": "2",
+#                                                 "marginTop": "4",
+#                                             },
+#                                         ),
+#                                         dcc.Input(
+#                                             id="new_opportunity_probability",
+#                                             placeholder="0",
+#                                             type="number",
+#                                             max=100,
+#                                             step=1,
+#                                             value="",
+#                                             style={"width": "100%"},
+#                                         ),
+#
+#                                     ],
+#                                     className="six columns",
+#                                     style={"paddingLeft": "15"},
+#                                 ),
+#                             ],
+#                             className="row",
+#                             style={"paddingTop": "2%"},
+#                         ),
+#
+#
+#                         # submit button
+#                         html.Span(
+#                             "Submit",
+#                             id="submit_new_opportunity",
+#                             n_clicks=0,
+#                             className="button button--primary add"
+#                         ),
+#                     ],
+#                     className="modal-content",
+#                     style={"textAlign": "center"},
+#                 )
+#             ],
+#             className="modal",
+#         ),
+#         id="opportunities_modal",
+#         style={"display": "none"},
+#     )
 
 
 layout = [
@@ -506,7 +502,7 @@ layout = [
             html.Div(
                 [
                     html.P(
-                        "Top Open opportunities",
+                        "Give Me Some Credit Kaggle Dataset",
                         style={
                             "color": "#2a3f5f",
                             "fontSize": "13px",
@@ -515,12 +511,12 @@ layout = [
                         },
                     ),
                     html.Div(
-                        id="top_open_opportunities",
+                        id="give_me_some_credit_dataset",
                         style={"padding": "0px 13px 5px 13px", "marginBottom": "5"},
                     ),
                    
                 ],
-                className="six columns",
+                className="twelve columns",
                 style={
                     "backgroundColor": "white",
                     "border": "1px solid #C8D4E3",
@@ -529,34 +525,6 @@ layout = [
                     "overflowY": "scroll",
                 },
             ),
-            html.Div(
-                [
-                    html.P(
-                        "Top Lost opportunities",
-                        style={
-                            "color": "#2a3f5f",
-                            "fontSize": "13px",
-                            "textAlign": "center",
-                            "marginBottom": "0",
-                        },
-                    ),
-                    html.Div(
-                        id="top_lost_opportunities",
-                        style={"padding": "0px 13px 5px 13px", "marginBottom": "5"},
-                    )
-                ],
-                className="six columns",
-                style={
-                    "backgroundColor": "white",
-                    "border": "1px solid #C8D4E3",
-                    "borderRadius": "3px",
-                    "height": "100%",
-                    "overflowY": "scroll",
-                },
-            ),
-
-            
-            modal(),
         ],
         className="row",
         style={"marginTop": "5px", "max height": "200px"},
@@ -565,159 +533,148 @@ layout = [
 
 
 # updates heatmap figure based on dropdowns values or df updates
-@app.callback(
-    Output("heatmap", "figure"),
-    [Input("heatmap_dropdown", "value"), Input("opportunities_df", "children")],
-)
-def heat_map_callback(stage, df):
-    df = pd.read_json(df, orient="split")
-    df = df[pd.notnull(df["Type"])]
-    x = []
-    y = df["Type"].unique()
-    if stage == "all_s":
-        x = df["StageName"].unique()
-    elif stage == "cold":
-        x = ["Needs Analysis", "Prospecting", "Qualification"]
-    elif stage == "warm":
-        x = ["Value Proposition", "Id. Decision Makers", "Perception Analysis"]
-    else:
-        x = ["Proposal/Price Quote", "Negotiation/Review", "Closed Won"]
-    return heat_map_fig(df, x, y)
-
-
-# updates converted opportunity count graph based on dropdowns values or df updates
-@app.callback(
-    Output("converted_count", "figure"),
-    [
-        Input("converted_opportunities_dropdown", "value"),
-        Input("source_dropdown", "value"),
-        Input("opportunities_df", "children"),
-    ],
-)
-def converted_opportunity_callback(period, source, df):
-    df = pd.read_json(df, orient="split")
-    return converted_opportunities(period, source, df)
-
-
-# updates left indicator value based on df updates
-@app.callback(
-    Output("left_opportunities_indicator", "children"),
-    [Input("opportunities_df", "children")],
-)
-def left_opportunities_indicator_callback(df):
-    df = pd.read_json(df, orient="split")
-    won = millify(str(df[df["IsWon"] == 1]["Amount"].sum()))
-    return won
-
-
-# updates middle indicator value based on df updates
-@app.callback(
-    Output("middle_opportunities_indicator", "children"),
-    [Input("opportunities_df", "children")],
-)
-def middle_opportunities_indicator_callback(df):
-    df = pd.read_json(df, orient="split")
-    active = millify(
-        str(df[(df["IsClosed"] == 0)]["Amount"].sum())
-    )
-    return active
-
-
-# updates right indicator value based on df updates
-@app.callback(
-    Output("right_opportunities_indicator", "children"),
-    [Input("opportunities_df", "children")],
-)
-def right_opportunities_indicator_callback(df):
-    df = pd.read_json(df, orient="split")
-    lost = millify(
-        str(
-            df[
-                (df["IsWon"] == 0) & (df["IsClosed"] == 1)
-            ]["Amount"].sum()
-        )
-    )
-    return lost
-
-
-# hide/show modal
-@app.callback(
-    Output("opportunities_modal", "style"), [Input("new_opportunity", "n_clicks")]
-)
-def display_opportunities_modal_callback(n):
-    if n > 0:
-        return {"display": "block"}
-    return {"display": "none"}
-
-
-# reset to 0 add button n_clicks property
-@app.callback(
-    Output("new_opportunity", "n_clicks"),
-    [
-        Input("opportunities_modal_close", "n_clicks"),
-        Input("submit_new_opportunity", "n_clicks"),
-    ],
-)
-def close_modal_callback(n, n2):
-    return 0
+# @app.callback(
+#     Output("heatmap", "figure"),
+#     [Input("heatmap_dropdown", "value"), Input("opportunities_df", "children")],
+# )
+# def heat_map_callback(stage, df):
+#     df = pd.read_json(df, orient="split")
+#     df = df[pd.notnull(df["Type"])]
+#     x = []
+#     y = df["Type"].unique()
+#     if stage == "all_s":
+#         x = df["StageName"].unique()
+#     elif stage == "cold":
+#         x = ["Needs Analysis", "Prospecting", "Qualification"]
+#     elif stage == "warm":
+#         x = ["Value Proposition", "Id. Decision Makers", "Perception Analysis"]
+#     else:
+#         x = ["Proposal/Price Quote", "Negotiation/Review", "Closed Won"]
+#     return heat_map_fig(df, x, y)
+#
+#
+# # updates converted opportunity count graph based on dropdowns values or df updates
+# @app.callback(
+#     Output("converted_count", "figure"),
+#     [
+#         Input("converted_opportunities_dropdown", "value"),
+#         Input("source_dropdown", "value"),
+#         Input("opportunities_df", "children"),
+#     ],
+# )
+# def converted_opportunity_callback(period, source, df):
+#     df = pd.read_json(df, orient="split")
+#     return converted_opportunities(period, source, df)
+#
+#
+# # updates left indicator value based on df updates
+# @app.callback(
+#     Output("left_opportunities_indicator", "children"),
+#     [Input("opportunities_df", "children")],
+# )
+# def left_opportunities_indicator_callback(df):
+#     df = pd.read_json(df, orient="split")
+#     won = millify(str(df[df["IsWon"] == 1]["Amount"].sum()))
+#     return won
+#
+#
+# # updates middle indicator value based on df updates
+# @app.callback(
+#     Output("middle_opportunities_indicator", "children"),
+#     [Input("opportunities_df", "children")],
+# )
+# def middle_opportunities_indicator_callback(df):
+#     df = pd.read_json(df, orient="split")
+#     active = millify(
+#         str(df[(df["IsClosed"] == 0)]["Amount"].sum())
+#     )
+#     return active
+#
+#
+# # updates right indicator value based on df updates
+# @app.callback(
+#     Output("right_opportunities_indicator", "children"),
+#     [Input("opportunities_df", "children")],
+# )
+# def right_opportunities_indicator_callback(df):
+#     df = pd.read_json(df, orient="split")
+#     lost = millify(
+#         str(
+#             df[
+#                 (df["IsWon"] == 0) & (df["IsClosed"] == 1)
+#             ]["Amount"].sum()
+#         )
+#     )
+#     return lost
+#
+#
+# # hide/show modal
+# @app.callback(
+#     Output("opportunities_modal", "style"), [Input("new_opportunity", "n_clicks")]
+# )
+# def display_opportunities_modal_callback(n):
+#     if n > 0:
+#         return {"display": "block"}
+#     return {"display": "none"}
+#
+#
+# # reset to 0 add button n_clicks property
+# @app.callback(
+#     Output("new_opportunity", "n_clicks"),
+#     [
+#         Input("opportunities_modal_close", "n_clicks"),
+#         Input("submit_new_opportunity", "n_clicks"),
+#     ],
+# )
+# def close_modal_callback(n, n2):
+#     return 0
 
 
 # add new opportunity to salesforce and stores new df in hidden div
-@app.callback(
-    Output("opportunities_df", "children"),
-    [Input("submit_new_opportunity", "n_clicks")],
-    [
-        State("new_opportunity_name", "value"),
-        State("new_opportunity_stage", "value"),
-        State("new_opportunity_amount", "value"),
-        State("new_opportunity_probability", "value"),
-        State("new_opportunity_date", "date"),
-        State("new_opportunity_type", "value"),
-        State("new_opportunity_source", "value"),
-        State("opportunities_df", "children"),
-    ],
-)
-def add_opportunity_callback(
-    n_clicks, name, stage, amount, probability, date, o_type, source, current_df
-):
-    if n_clicks > 0:
-        if name == "":
-            name = "Not named yet"
-        query = {
-            "Name": name,
-            "StageName": stage,
-            "Amount": amount,
-            "Probability": probability,
-            "CloseDate": date,
-            "Type": o_type,
-            "LeadSource": source,
-        }
-
-        sf_manager.add_opportunity(query) 
-
-        df = sf_manager.get_opportunities()
-
-        return df.to_json(orient="split")
-
-    return current_df
+# @app.callback(
+#     Output("opportunities_df", "children"),
+#     [Input("submit_new_opportunity", "n_clicks")],
+#     [
+#         State("new_opportunity_name", "value"),
+#         State("new_opportunity_stage", "value"),
+#         State("new_opportunity_amount", "value"),
+#         State("new_opportunity_probability", "value"),
+#         State("new_opportunity_date", "date"),
+#         State("new_opportunity_type", "value"),
+#         State("new_opportunity_source", "value"),
+#         State("opportunities_df", "children"),
+#     ],
+# )
+# def add_opportunity_callback(
+#     n_clicks, name, stage, amount, probability, date, o_type, source, current_df
+# ):
+#     if n_clicks > 0:
+#         if name == "":
+#             name = "Not named yet"
+#         query = {
+#             "Name": name,
+#             "StageName": stage,
+#             "Amount": amount,
+#             "Probability": probability,
+#             "CloseDate": date,
+#             "Type": o_type,
+#             "LeadSource": source,
+#         }
+#
+#         sf_manager.add_opportunity(query)
+#
+#         df = sf_manager.get_opportunities()
+#
+#         return df.to_json(orient="split")
+#
+#     return current_df
 
 
 # updates top open opportunities based on df updates
 @app.callback(
-    Output("top_open_opportunities", "children"),
-    [Input("opportunities_df", "children")],
+    Output("give_me_some_credit_dataset", "children"),
+    [Input("give_me_some_credit_df", "children")],
 )
-def top_open_opportunities_callback(df):
+def give_me_some_credit_callback(df):
     df = pd.read_json(df, orient="split")
-    return top_open_opportunities(df)
-
-
-
-# updates top lost opportunities based on df updates
-@app.callback(
-    Output("top_lost_opportunities", "children"),
-    [Input("opportunities_df", "children")],
-)
-def top_lost_opportunities_callback(df):
-    df = pd.read_json(df, orient="split")
-    return top_lost_opportunities(df)
+    return give_me_some_credit(df)
