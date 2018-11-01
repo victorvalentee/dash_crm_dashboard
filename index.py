@@ -16,7 +16,7 @@ app.layout = html.Div(
         # header
         html.Div([
 
-            html.Span("CRM App using Salesforce API", className='app-title'),
+            html.Span("ML/BI Explorer Dashboard", className='app-title'),
             
             html.Div(
                 html.Img(src='https://s3-us-west-1.amazonaws.com/plotly-tutorials/logo/new-branding/dash-logo-by-plotly-stripe-inverted.png',height="100%")
@@ -30,7 +30,7 @@ app.layout = html.Div(
 
             dcc.Tabs(
                 id="tabs",
-                style={"height":"20","verticalAlign":"middle"},
+                style={"height":"25","verticalAlign":"middle"},
                 children=[
                     dcc.Tab(label="Opportunities", value="opportunities_tab"),
                     dcc.Tab(label="Leads", value="leads_tab"),
